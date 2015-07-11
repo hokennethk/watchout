@@ -83,6 +83,8 @@ var translate = function() {
       d.y = Math.random() * 500;
       return d.y;
     });
+  d3.timer(translate, 1500);
+  return true;  
 };
 
 var onDragDrop = function(clickHandler){
@@ -117,6 +119,14 @@ var determineCollision = function() {
         d3.select(".high > span").text(highScore);
       }
       if(currentScore > 5) {
+        // flash background
+        svg.style("background-color", "rgba(255, 20, 30, 0.7)");
+        d3.timer(function() {
+          svg.style("background-color", "white");
+          return true;
+        }, 100);
+
+
         numOfCollisions++;
         d3.select(".collisions > span").text(numOfCollisions);
       }
@@ -124,29 +134,23 @@ var determineCollision = function() {
       
     }
   });
+
+  d3.timer(determineCollision, 10);
+  return true;
 };
 
 var increaseScore = function(){
   currentScore++;
   d3.select(".current > span").text(currentScore);
+  d3.timer(increaseScore, 100);
+  return true;
 };
 
 
 initialize(15);
-
-// svg.selectAll(".player").on("mousemove", function() {
-
-//   var position = d3.mouse(this);
-//   svg.selectAll(".player")
-//     .attr("cx", position[0])
-//     .attr("cy", position[1]);
-// });
-
-
-// console.log(svg.selectAll("circle"));
-setInterval(translate, 1000);
-setInterval(determineCollision, 10);
-setInterval(increaseScore, 100);
+d3.timer(translate, 1000);
+d3.timer(determineCollision, 10);
+d3.timer(increaseScore, 100);
 svg.selectAll(".player").call(onDragDrop(dragClick));
 
 
