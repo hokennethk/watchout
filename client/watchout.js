@@ -5,7 +5,7 @@ var enemyData = [];
 
 var svg = d3.select("svg");
 var drag = d3.behavior.drag();
-
+var color = d3.scale.category20b();
 
 
 var getPosition = function(){
@@ -38,8 +38,12 @@ var initialize = function(n) {
       return d.y;
     })
     .attr("r", 10)
-    .attr("fill", "#ff7373")
-    .attr("stroke", "red")
+    .attr("fill", function(d, i){
+      return color(i);
+    })
+    .attr("stroke", function(d, i){
+      return color((i + 7) % 10)
+    })
     .attr("stroke-width", 2);
 
   svg.selectAll(".player")
@@ -54,8 +58,8 @@ var initialize = function(n) {
       return d.y;
     })
     .attr("r", 10)
-    .attr("fill", "#0af")
-    .attr("stroke", "blue")
+    .attr("fill", "#000")
+    .attr("stroke", "#636363")
     .attr("stroke-width", 2);
 
 };
@@ -63,7 +67,7 @@ var initialize = function(n) {
 var translate = function() {
   svg.selectAll(".enemy")
     .transition()
-    .duration(700)
+    .duration(1000)
     .attr("cx", function(d) {
       return Math.random() * 500;
     })
@@ -72,9 +76,8 @@ var translate = function() {
     });
 };
 
-var onDragDrop = function(clickHandler, dropHandler){
-  drag.on("drag", clickHandler)
-    .on("dragend", dropHandler)
+var onDragDrop = function(clickHandler){
+  drag.on("drag", clickHandler);
   return drag;
 };
 
@@ -84,18 +87,9 @@ var dragClick = function(d){
     .attr("cy", d.y = d3.event.y);
 };
 
-var dragDrop = function(d){
-  alert('dropped');
-};
-
-
 
 
 initialize(30);
-
-
-
-
 
 // svg.selectAll(".player").on("mousemove", function() {
 
@@ -107,9 +101,9 @@ initialize(30);
 
 
 // console.log(svg.selectAll("circle"));
-setInterval(translate, 700);
+setInterval(translate, 1000);
 
-svg.selectAll(".player").call(onDragDrop(dragClick, dragDrop));
+svg.selectAll(".player").call(onDragDrop(dragClick));
 
 
 
