@@ -15,7 +15,7 @@ var numOfCollisions = 0;
 var getPosition = function(){
   var position = {};
 
-  position.x =  Math.random() * 500;
+  position.x = Math.random() * 500;
   position.y = Math.random() * 500;
   return position;
 }
@@ -30,25 +30,28 @@ var populateEnemyData = function(n){
 var initialize = function(n) {
   populateEnemyData(n);
 
-  svg.selectAll("circle")
+  svg.selectAll("image")
     .data(enemyData)
     .enter()
-    .append("circle")
+    .append("image")
     .attr("class", "enemy")
-    .attr("cx", function(d){
-      return d.x
+    .attr("x", function(d){
+      return d.x;
     })
-    .attr("cy", function(d){
+    .attr("y", function(d){
       return d.y;
     })
-    .attr("r", radius)
-    .attr("fill", function(d, i){
-      return color(i % 4);
-    })
-    .attr("stroke", function(d, i){
-      return color((i - 2) % 4);//color((i + 1) % 4);
-    })
-    .attr("stroke-width", 2);
+    // .attr("r", radius)
+    .attr("width", 2 * radius)
+    .attr("height", 2 * radius)
+    .attr("xlink:href", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Fuuma_Shuriken.svg/525px-Fuuma_Shuriken.svg.png")
+    // .attr("fill", function(d, i){
+    //   return color(i % 4);
+    // })
+    // .attr("stroke", function(d, i){
+    //   return color((i - 2) % 4);//color((i + 1) % 4);
+    // })
+    // .attr("stroke-width", 2);
 
   svg.selectAll(".player")
     .data([{x: 250, y: 250}])
@@ -72,11 +75,11 @@ var translate = function() {
   svg.selectAll(".enemy")
     .transition()
     .duration(1000)
-    .attr("cx", function(d) {
+    .attr("x", function(d) {
       d.x = Math.random() * 500;
       return d.x;
     })
-    .attr("cy", function(d) {
+    .attr("y", function(d) {
       d.y = Math.random() * 500;
       return d.y;
     });
@@ -97,19 +100,23 @@ var dragClick = function(d){
 };
 
 var determineCollision = function() {
-  var playerPosX = svg.select(".player").attr("cx");
-  var playerPosY = svg.select(".player").attr("cy");
+  var playerPosX = +svg.select(".player").attr("cx");
+  var playerPosY = +svg.select(".player").attr("cy");
   var diameter = 2 * radius;
   svg.selectAll(".enemy").each(function() {
     var enemy = d3.select(this);
-    if (Math.sqrt(Math.pow(playerPosX - d3.select(this).attr("cx"), 2) + Math.pow(playerPosY - d3.select(this).attr("cy"), 2)) < diameter) {
+    var enemyX = +enemy.attr('x');
+    var enemyY = +enemy.attr('y');
+    var diffX = (enemyX + radius) - playerPosX;
+    var diffY = (enemyY + radius) - playerPosY;
+    if (Math.sqrt(diffX * diffX + diffY * diffY) < diameter) {
       // handle scoring
       
       if(highScore < currentScore){
         highScore = currentScore;
         d3.select(".high > span").text(highScore);
       }
-      if(currentScore > 10) {
+      if(currentScore > 5) {
         numOfCollisions++;
         d3.select(".collisions > span").text(numOfCollisions);
       }
@@ -125,7 +132,7 @@ var increaseScore = function(){
 };
 
 
-initialize(10);
+initialize(15);
 
 // svg.selectAll(".player").on("mousemove", function() {
 
