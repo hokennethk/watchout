@@ -7,6 +7,10 @@ var svg = d3.select("svg");
 var drag = d3.behavior.drag();
 var color = d3.scale.category10();
 
+var highScore = 0;
+var currentScore = 0;
+var numOfCollisions = 0; 
+
 
 var getPosition = function(){
   var position = {};
@@ -96,13 +100,29 @@ var determineCollision = function() {
   svg.selectAll(".enemy").each(function() {
     var enemy = d3.select(this);
     if (Math.sqrt(Math.pow(playerPosX - d3.select(this).attr("cx"), 2) + Math.pow(playerPosY - d3.select(this).attr("cy"), 2)) < diameter) {
-      console.log('boom');
+      // handle scoring
+      
+      if(highScore < currentScore){
+        highScore = currentScore;
+        d3.select(".high > span").text(highScore);
+      }
+      if(currentScore > 10) {
+        numOfCollisions++;
+        d3.select(".collisions > span").text(numOfCollisions);
+      }
+      currentScore = 0;
+      
     }
   });
 };
 
+var increaseScore = function(){
+  currentScore++;
+  d3.select(".current > span").text(currentScore);
+};
 
-initialize(5);
+
+initialize(10);
 
 // svg.selectAll(".player").on("mousemove", function() {
 
@@ -116,6 +136,7 @@ initialize(5);
 // console.log(svg.selectAll("circle"));
 setInterval(translate, 1000);
 setInterval(determineCollision, 10);
+setInterval(increaseScore, 100);
 svg.selectAll(".player").call(onDragDrop(dragClick));
 
 
