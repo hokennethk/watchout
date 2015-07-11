@@ -88,9 +88,12 @@ var onDragDrop = function(clickHandler){
 };
 
 var dragClick = function(d){
-  d3.select(this)
-    .attr("cx", d.x = d3.event.x)
-    .attr("cy", d.y = d3.event.y);
+  if ((d3.event.x > radius && d3.event.x < 500 - radius) && (d3.event.y > radius && d3.event.y < 500 - radius)) {
+    d3.select(this)
+      .attr("cx", d.x = d3.event.x)
+      .attr("cy", d.y = d3.event.y);
+    
+  } 
 };
 
 var determineCollision = function() {
