@@ -2,7 +2,7 @@
 
 
 var enemyData = [];
-
+var radius = 10;
 var svg = d3.select("svg");
 var drag = d3.behavior.drag();
 var color = d3.scale.category10();
@@ -37,7 +37,7 @@ var initialize = function(n) {
     .attr("cy", function(d){
       return d.y;
     })
-    .attr("r", 10)
+    .attr("r", radius)
     .attr("fill", function(d, i){
       return color(i % 4);
     })
@@ -57,7 +57,7 @@ var initialize = function(n) {
     .attr("cy", function(d) {
       return d.y;
     })
-    .attr("r", 10)
+    .attr("r", radius)
     .attr("fill", "#000")
     .attr("stroke", "#636363")
     .attr("stroke-width", 2);
@@ -69,10 +69,12 @@ var translate = function() {
     .transition()
     .duration(1000)
     .attr("cx", function(d) {
-      return Math.random() * 500;
+      d.x = Math.random() * 500;
+      return d.x;
     })
     .attr("cy", function(d) {
-      return Math.random() * 500;
+      d.y = Math.random() * 500;
+      return d.y;
     });
 };
 
@@ -87,9 +89,20 @@ var dragClick = function(d){
     .attr("cy", d.y = d3.event.y);
 };
 
+var determineCollision = function() {
+  var playerPosX = svg.select(".player").attr("cx");
+  var playerPosY = svg.select(".player").attr("cy");
+  var diameter = 2 * radius;
+  svg.selectAll(".enemy").each(function() {
+    var enemy = d3.select(this);
+    if (Math.sqrt(Math.pow(playerPosX - d3.select(this).attr("cx"), 2) + Math.pow(playerPosY - d3.select(this).attr("cy"), 2)) < diameter) {
+      console.log('boom');
+    }
+  });
+};
 
 
-initialize(30);
+initialize(5);
 
 // svg.selectAll(".player").on("mousemove", function() {
 
@@ -102,7 +115,7 @@ initialize(30);
 
 // console.log(svg.selectAll("circle"));
 setInterval(translate, 1000);
-
+setInterval(determineCollision, 10);
 svg.selectAll(".player").call(onDragDrop(dragClick));
 
 
