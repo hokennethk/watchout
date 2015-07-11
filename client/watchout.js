@@ -5,7 +5,7 @@ var enemyData = [];
 
 var svg = d3.select("svg");
 var drag = d3.behavior.drag();
-var color = d3.scale.category20b();
+var color = d3.scale.category10();
 
 
 var getPosition = function(){
@@ -39,10 +39,10 @@ var initialize = function(n) {
     })
     .attr("r", 10)
     .attr("fill", function(d, i){
-      return color(i);
+      return color(i % 4);
     })
     .attr("stroke", function(d, i){
-      return color((i + 7) % 10)
+      return color((i - 2) % 4);//color((i + 1) % 4);
     })
     .attr("stroke-width", 2);
 
